@@ -1,6 +1,6 @@
 
 function _initCanvas(){
-  canvas = document.getElementById('canvas');
+	canvas = document.getElementById('canvas');
 	ctx = canvas.getContext('2d');
 	canvas.onmousedown = press;
 	ctx.mozImageSmoothingEnabled = true;
@@ -14,7 +14,7 @@ function press(ev){
 	var x = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
 	var y = ev.clientY + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
 	ev.target.onmousemove = drag;
-	document.onmouseup = relase;
+	document.onmouseup = release;
 
 	ctx.beginPath();
 	prevx = x;
@@ -44,7 +44,7 @@ function press(ev){
 		    }
 		}
 	}
-	function relase(ev){
+	function release(ev){
 		ev.target.onmousemove = null;
 		document.onmouseup = null;
 	}

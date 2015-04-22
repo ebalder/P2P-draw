@@ -1,7 +1,12 @@
 {
-    "name": "P2P-draw",
-    "version": "0.1",
-    "dependencies" : {
-        "peer" : "0.1.6"
-    }
+  "name": "P2PDraw",
+  "version": "0.1.1",
+  "scripts": {
+    "start": "node peerServer.js"
+  },
+  "author": "Elsa Balderrama <mail@elsabalderrama.com>",
+  "license": "GPL3",
+  "dependencies": {
+    "peer": "0.2.0"
+  }
 }

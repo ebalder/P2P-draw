@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
+	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title></title>
 </head>
@@ -17,16 +17,12 @@ function _init(){
 	var button = document.getElementById("connect");
 	var prevX = null;
 	var prevY = null;
-	button.onclick = function(){
-		var peer = new Peer(id.value, {host: 'localhost', port:9000});
-		if(remote.value != null){
-			conn = peer.connect(remote.value);
-			console.log('connecting...');
-		}
-		conn.on('open', function(){
-			console.log("connected to peer");
-		}); 
+	var peer;
+	id.onchange = function(ev){
+		peer = new Peer(ev.target.value, {host: 'http://peer.elsabalderrama.com', port:9000});
+		console.log("peer created");
 		peer.on('connection', function(conn) {
+			console.log('incoming connection from ', conn.peer);
 			conn.on('data', function(data){
 			  if(data.acc == "stroke"){
 			  	var x = data.x;
@@ -60,6 +56,16 @@ function _init(){
 			});
 		});
 	};
+	button.onclick = function(){
+		if(remote.value != null){
+			conn = peer.connect(remote.value);
+			console.log('connecting...');
+		}
+		conn.on('open', function(){
+			console.log("connected to ", conn.peer);
+		}); 
+	};
+		
 	var width = document.getElementById("width");
 	width.onchange = function(ev){
 		ctx.lineWidth = ev.target.value;
