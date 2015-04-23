@@ -7,7 +7,7 @@
   "author": "Elsa Balderrama <mail@elsabalderrama.com>",
   "license": "GPL3",
   "dependencies": {
-    "peer": "0.2.0",
+    "peer": "0.2.8",
     "express": "4.x",
     "serve-static": "1.9.x"
   }
