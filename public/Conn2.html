@@ -19,7 +19,7 @@ function _init(){
 	var prevY = null;
 	var peer;
 	id.onchange = function(ev){
-		peer = new Peer(ev.target.value, {host:'/', path:'' /*'peer-to-draw.herokuapp.com'*/, port:9000});
+		peer = new Peer(ev.target.value, {host:'/'/*, path:'peerServer' 'peer-to-draw.herokuapp.com'*/, port:9000});
 		console.log("peer created");
 		peer.on('connection', function(conn) {
 			console.log('incoming connection from ', conn.peer);
