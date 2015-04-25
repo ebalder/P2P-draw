@@ -3,73 +3,100 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
+	<title>Peer to Paint</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="lib/peer.js"></script>
+	<script type="text/javascript" src="Canvas.js"></script>
 </head>
 <body>
- <script type="text/javascript" src="lib/peer.js"></script>
-<script type="text/javascript" src="Canvas.js"></script>
+
 <script>
+
 window.onload = _init;
+
 function _init(){
 	_initCanvas();
-	var id = document.getElementById("peerId");
+	var id = document.getElementById("peer-id-in");
 	var remote = document.getElementById("remotePeer");
 	var button = document.getElementById("connect");
 	var prevX = null;
 	var prevY = null;
 	var peer;
-	id.onchange = function(ev){
-		peer = new Peer(ev.target.value, {host:'/', path:'peerServer', port:location.port});
-		console.log("peer created");
-		peer.on('connection', function(conn) {
-			console.log('incoming connection from ', conn.peer);
-			conn.on('data', function(data){
-			  if(data.acc == "stroke"){
-			  	var x = data.x;
-			  	// + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
-				var y = data.y;
-				// + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
 
-				ctx.beginPath();
-				ctx.moveTo(prevX, prevY);
-			  	ctx.lineTo(x, y);
-			  	ctx.stroke();
-			  	// console.log(x, y, prevX, prevY);
-			  	prevX = x;
-			  	prevY = y;
-			 	//  var index = (data.x + data.y * imgData.width) * 4
-				// imgData.data[index+0] = 0;
-				// imgData.data[index+1] = 0;
-				// imgData.data[index+2] = 0;
-				// imgData.data[index+3] = 255;
-			  }
-			  else if(data.acc == "press"){
-		  		var x = data.x ;
-		  		// + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
-		  		var y = data.y ;
-		  		// + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
-			  	ctx.beginPath();
-			  	prevX = x;
-			  	prevY = y;
-			  }
-			  //ctx.putImageData(imgData, 0, 0);
-			});
-		});
-	};
-	button.onclick = function(){
+
+
+
+	// id.onchange = function(ev){
+	 	peer = new Peer(/*ev.target.value,*/ {host:'/', path:'peerServer', port:location.port});
+
+	 	peer.on('open', function(id){
+	 		console.log("peer created", id);
+	 		var idel = document.getElementById('peer-id');
+	 		idel.value = id;
+	 	});
+
+	 	peer.on('connection', function(_conn) {
+
+	 		conn = _conn;
+	 		console.log('incoming connection from %s', _conn.peer);
+
+	 		if(peer.connections[_conn.peer].length == 1){
+	 		 	conn = peer.connect(_conn.peer);
+	 		}
+
+
+	 		var connForm = document.getElementById('connect-form');
+	 		connForm.style.visibility = 'hidden';
+
+	 		conn.on('data', function(data){
+	 		  if(data.acc == "stroke"){
+	 		  	var x = data.x;
+	 		  	// + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
+	 			var y = data.y;
+	 			// + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
+
+	 			ctx.beginPath();
+	 			ctx.moveTo(prevX, prevY);
+	 		  	ctx.lineTo(x, y);
+	 		  	ctx.stroke();
+	 		  	// console.log(x, y, prevX, prevY);
+	 		  	prevX = x;
+	 		  	prevY = y;
+	 		 	//  var index = (data.x + data.y * imgData.width) * 4
+	 			// imgData.data[index+0] = 0;
+	 			// imgData.data[index+1] = 0;
+	 			// imgData.data[index+2] = 0;
+	 			// imgData.data[index+3] = 255;
+	 		  }
+	 		  else if(data.acc == "press"){
+	 	  		var x = data.x ;
+	 	  		// + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
+	 	  		var y = data.y ;
+	 	  		// + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
+	 		  	ctx.beginPath();
+	 		  	prevX = x;
+	 		  	prevY = y;
+	 		  }
+	 		  //ctx.putImageData(imgData, 0, 0);
+	 		});
+	 	});
+	//};
+
+	button.onclick = function(ev){
+		ev.preventDefault();
 		if(remote.value != null){
 			conn = peer.connect(remote.value);
 			console.log('connecting...');
+	 		var connForm = document.getElementById('connect-form');
+	 		connForm.style.visibility = 'hidden';
 		}
-		conn.on('open', function(){
-			console.log("connected to ", conn.peer);
-		}); 
+		return false;
 	};
 		
-	var width = document.getElementById("width");
-	width.onchange = function(ev){
-		ctx.lineWidth = ev.target.value;
-		bWidth = ctx.lineWidth;
+	// var width = document.getElementById("brush-size-in");
+	// width.onchange = function(ev){
+	// 	ctx.lineWidth = ev.target.value;
+	// 	bWidth = ctx.lineWidth;
 		// brush=null;
 		// switch(true){
 		// 	case bWidth <= 1 : 
@@ -81,15 +108,39 @@ function _init(){
 		// 		brush[3] = 1*bWidth;
 		// }
 		//console.log(ctx.lineWidth, brush);
-	}
+	// }
 }
 </script>
-ID: <input id="peerId" type="text"/> <br>
-Connect to: <input id="remotePeer" type="text"/> <br>
-<input id="connect" type="button" value="connect"/><br>
-<input type="text" id="width" /><br>
+
+<div>
+ <form name="connect" id="connect-form">
+
+	<!--<span>
+		<label for="peer-id-in"> Choose a unique name: </label> 
+		<input name="id" id="peer-id-in" type="text"/>
+	</span>-->
+	<span>
+		<label for="peer-id"> Give your ID to a friend:  </label>
+		<input name="id" id="peer-id" type="text" readonly/>
+	</span> 
+
+	<span>
+		<label for="peer-in"> Or connect to: </label>
+		<input id="remotePeer" type="text"/>
+	</span> 
+	<input id="connect" type="submit" value="connect"/>
+</form>
+
+<!--  <span id="tool">
+	<label for="brush-size-in">Brush size</label> 
+	<input type="text" id="brush-size-in" />
+</span>  -->
+
 <canvas id="canvas" width="1000" height="600"></canvas>
-<br>
-&copy; Elsa M. Balderrama : Jul-2013
+
+<footer>
+	© Elsa M. Balderrama : Apr-2015
+</footer>
+</div>
 </body>
 </html>

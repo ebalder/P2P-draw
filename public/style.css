@@ -1,0 +1,28 @@
+
+body{
+	margin: 0;
+	padding: 0;
+}
+
+footer{
+	text-align: center
+}
+
+input{
+	background: none;
+	border: solid 1px #B0B0B0;
+}
+
+#canvas{
+	border: solid 1px #E0E0E0;
+	box-sizing: border-box;
+	display: block;
+	margin: auto;
+}
+
+#connect-form{
+	display: block;
+	text-align: center;
+	margin: auto;
+	padding: 0.5rem;
+}
